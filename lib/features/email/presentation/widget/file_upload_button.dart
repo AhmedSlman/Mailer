@@ -6,8 +6,9 @@ class FileUploadButton extends StatelessWidget {
   final IconData icon;
   final List<String> extensions;
   final Function(String) onFileSelected;
+  final _dialogKey = GlobalKey<NavigatorState>();
 
-  const FileUploadButton({
+  FileUploadButton({
     super.key,
     required this.label,
     required this.icon,
@@ -19,11 +20,13 @@ class FileUploadButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
       onPressed: () async {
-        bool isLoading = true;
         showDialog(
           context: context,
           barrierDismissible: false,
-          builder: (_) => const Center(child: CircularProgressIndicator()),
+          builder: (_) => WillPopScope(
+            onWillPop: () async => false,
+            child: const Center(child: CircularProgressIndicator()),
+          ),
         );
         try {
           FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -35,8 +38,9 @@ class FileUploadButton extends StatelessWidget {
             onFileSelected(filePath);
           }
         } finally {
-          isLoading = false;
-          Navigator.pop(context);
+          if (context.mounted) {
+            Navigator.of(context, rootNavigator: true).pop();
+          }
         }
       },
       icon: Icon(icon),
