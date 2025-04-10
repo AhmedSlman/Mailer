@@ -1,3 +1,4 @@
+import 'package:emails_sender/features/email/presentation/view/email_input_screen.dart';
 import 'package:emails_sender/features/template_management/data/repositories/template_repository_impl.dart';
 import 'package:emails_sender/features/template_management/domain/usecases/add_template.dart';
 import 'package:emails_sender/features/template_management/domain/usecases/delete_template.dart';
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
             DeleteTemplateUseCase(TemplateRepositoryImpl()),
           ),
       child: MaterialApp(
-        home: TemplateScreen(),
+        home: EmailInputScreen(),
         debugShowCheckedModeBanner: false,
       ),
     );

@@ -4,58 +4,47 @@ import 'package:excel/excel.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart' as syncfusion;
 import 'package:emails_sender/features/email/domain/entities/email.dart';
 import 'package:emails_sender/features/email/domain/repo/email_repository.dart';
+import 'package:emails_sender/features/email/data/datasources/email_local_datasource.dart';
+
+class EmailRepositoryException implements Exception {
+  final String message;
+  final dynamic error;
+
+  EmailRepositoryException(this.message, [this.error]);
+
+  @override
+  String toString() => 'EmailRepositoryException: $message${error != null ? '\nError: $error' : ''}';
+}
 
 class EmailRepositoryImpl implements EmailRepository {
+  final EmailLocalDataSource localDataSource;
+
+  EmailRepositoryImpl(this.localDataSource);
+
   @override
   Future<List<Email>> getEmailsFromFile(String filePath) async {
     try {
-      List<Email> emails = [];
-      final emailPattern = RegExp(
-        r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}',
-      );
-
-      if (filePath.endsWith('.xlsx') || filePath.endsWith('.xls')) {
-        // التعامل مع ملفات Excel
-        var bytes = File(filePath).readAsBytesSync();
-        var excel = Excel.decodeBytes(bytes);
-        for (var table in excel.tables.keys) {
-          for (var row in excel.tables[table]!.rows) {
-            if (row.isNotEmpty && row[0] != null) {
-              String emailText = row[0]!.value.toString();
-              if (emailPattern.hasMatch(emailText)) {
-                emails.add(Email(emailText));
-              }
-            }
-          }
-        }
-      } else if (filePath.endsWith('.pdf')) {
-        final file = File(filePath);
-        final bytes = file.readAsBytesSync();
-        final pdfDoc = syncfusion.PdfDocument(inputBytes: bytes);
-        final pageCount = pdfDoc.pages.count;
-        print("PDF Pages Count: $pageCount");
-
-        final textExtractor = syncfusion.PdfTextExtractor(pdfDoc);
-        for (var i = 0; i < pageCount; i++) {
-          final text = textExtractor.extractText(
-            startPageIndex: i,
-            endPageIndex: i,
-          );
-          print("Extracted Text from Page ${i + 1}: $text");
-          final matches = emailPattern.allMatches(text);
-          for (var match in matches) {
-            String email = match.group(0)!;
-            print("Found Email: $email");
-            emails.add(Email(email));
-          }
-        }
-        pdfDoc.dispose();
-      }
-      print("Final Emails List: $emails");
-      return emails;
+      return await localDataSource.getEmailsFromFile(filePath);
     } catch (e) {
-      print("Error reading file: $e");
-      return [];
+      throw EmailRepositoryException('Failed to get emails from file', e);
+    }
+  }
+
+  @override
+  Future<void> saveEmails(List<Email> emails) async {
+    try {
+      await localDataSource.saveEmails(emails);
+    } catch (e) {
+      throw EmailRepositoryException('Failed to save emails', e);
+    }
+  }
+
+  @override
+  Future<List<Email>> getSavedEmails() async {
+    try {
+      return await localDataSource.getSavedEmails();
+    } catch (e) {
+      throw EmailRepositoryException('Failed to get saved emails', e);
     }
   }
 }
