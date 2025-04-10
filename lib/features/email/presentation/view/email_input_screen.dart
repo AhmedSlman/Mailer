@@ -7,6 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:file_picker/file_picker.dart';
 
 class EmailInputScreen extends StatelessWidget {
+  const EmailInputScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
