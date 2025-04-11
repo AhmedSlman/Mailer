@@ -19,13 +19,19 @@ class TemplateCubit extends Cubit<TemplateState> {
     this._addTemplate,
     this._updateTemplate,
     this._deleteTemplate,
-  ) : super(TemplateInitial());
+  ) : super(TemplateInitial()) {
+    loadTemplates();
+  }
 
   Future<void> loadTemplates() async {
     emit(TemplateLoading());
     try {
       final templates = await _getTemplates();
-      emit(TemplateLoaded(templates));
+      if (templates.isEmpty) {
+        emit(TemplateLoaded([]));
+      } else {
+        emit(TemplateLoaded(templates));
+      }
     } catch (e) {
       emit(TemplateError('حدث خطأ أثناء تحميل القوالب: $e'));
     }
@@ -36,7 +42,6 @@ class TemplateCubit extends Cubit<TemplateState> {
     String coverLetter,
     String cvPath,
   ) async {
-    emit(TemplateLoading());
     try {
       final template = Template(
         id: const Uuid().v4(),
@@ -45,30 +50,52 @@ class TemplateCubit extends Cubit<TemplateState> {
         cvPath: cvPath,
       );
       await _addTemplate(template);
-      final templates = await _getTemplates();
-      emit(TemplateLoaded(templates));
+      
+      // Update the current state with the new template
+      if (state is TemplateLoaded) {
+        final currentTemplates = (state as TemplateLoaded).templates;
+        final updatedTemplates = [...currentTemplates, template];
+        emit(TemplateLoaded(updatedTemplates));
+      } else {
+        final templates = await _getTemplates();
+        emit(TemplateLoaded(templates));
+      }
     } catch (e) {
       emit(TemplateError('حدث خطأ أثناء إضافة القالب: $e'));
     }
   }
 
   Future<void> updateTemplate(Template template) async {
-    emit(TemplateLoading());
     try {
       await _updateTemplate(template);
-      final templates = await _getTemplates();
-      emit(TemplateLoaded(templates));
+      if (state is TemplateLoaded) {
+        final currentTemplates = (state as TemplateLoaded).templates;
+        final index = currentTemplates.indexWhere((t) => t.id == template.id);
+        if (index != -1) {
+          final updatedTemplates = [...currentTemplates];
+          updatedTemplates[index] = template;
+          emit(TemplateLoaded(updatedTemplates));
+        }
+      } else {
+        final templates = await _getTemplates();
+        emit(TemplateLoaded(templates));
+      }
     } catch (e) {
       emit(TemplateError('حدث خطأ أثناء تعديل القالب: $e'));
     }
   }
 
   Future<void> deleteTemplate(String id) async {
-    emit(TemplateLoading());
     try {
       await _deleteTemplate(id);
-      final templates = await _getTemplates();
-      emit(TemplateLoaded(templates));
+      if (state is TemplateLoaded) {
+        final currentTemplates = (state as TemplateLoaded).templates;
+        final updatedTemplates = currentTemplates.where((t) => t.id != id).toList();
+        emit(TemplateLoaded(updatedTemplates));
+      } else {
+        final templates = await _getTemplates();
+        emit(TemplateLoaded(templates));
+      }
     } catch (e) {
       emit(TemplateError('حدث خطأ أثناء حذف القالب: $e'));
     }

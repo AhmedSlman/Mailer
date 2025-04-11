@@ -9,6 +9,8 @@ import 'package:emails_sender/features/template_management/domain/usecases/add_t
 import 'package:emails_sender/features/template_management/domain/usecases/delete_template.dart';
 import 'package:emails_sender/features/template_management/domain/usecases/get_templates.dart';
 import 'package:emails_sender/features/template_management/domain/usecases/update_template.dart';
+import 'package:emails_sender/features/template_management/presentation/cubit/template_cubit.dart';
+import 'package:emails_sender/features/email/presentation/cubit/email_input_cubit.dart';
 
 final GetIt sl = GetIt.instance;
 
@@ -52,5 +54,19 @@ Future<void> init() async {
   
   sl.registerLazySingleton(
     () => DeleteTemplateUseCase(sl<TemplateRepository>()),
+  );
+
+  // Cubits
+  sl.registerFactory(
+    () => TemplateCubit(
+      sl<GetTemplatesUseCase>(),
+      sl<AddTemplateUseCase>(),
+      sl<UpdateTemplateUseCase>(),
+      sl<DeleteTemplateUseCase>(),
+    ),
+  );
+
+  sl.registerFactory(
+    () => EmailInputCubit(sl<GetEmailsUseCase>()),
   );
 } 

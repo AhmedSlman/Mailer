@@ -5,7 +5,7 @@ class TemplateCardWidget extends StatelessWidget {
   final Template template;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
-
+  
   const TemplateCardWidget({
     super.key,
     required this.template,

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:emails_sender/features/email/presentation/view/email_input_screen.dart';
 import 'package:emails_sender/features/template_management/presentation/view/template_screen.dart';
+import 'package:emails_sender/features/template_management/presentation/cubit/template_cubit.dart';
+import 'package:emails_sender/features/email/presentation/cubit/email_input_cubit.dart';
+import 'package:emails_sender/core/di/injection_container.dart';
 
 class AppRouter {
   static const String home = '/';
@@ -11,21 +15,31 @@ class AppRouter {
     initialLocation: home,
     routes: [
       ShellRoute(
-        builder: (context, state, child) => Scaffold(
-          body: child,
-          bottomNavigationBar: BottomNavigationBar(
-            currentIndex: _calculateSelectedIndex(state.uri.path),
-            onTap: (index) => _onItemTapped(index, context),
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.email),
-                label: 'Emails',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.description),
-                label: 'Templates',
-              ),
-            ],
+        builder: (context, state, child) => MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => sl<TemplateCubit>()..loadTemplates(),
+            ),
+            BlocProvider(
+              create: (context) => sl<EmailInputCubit>(),
+            ),
+          ],
+          child: Scaffold(
+            body: child,
+            bottomNavigationBar: BottomNavigationBar(
+              currentIndex: _calculateSelectedIndex(state.uri.path),
+              onTap: (index) => _onItemTapped(index, context),
+              items: const [
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.email),
+                  label: 'Emails',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.description),
+                  label: 'Templates',
+                ),
+              ],
+            ),
           ),
         ),
         routes: [
