@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:emails_sender/features/email/domain/entities/email.dart';
-import 'package:emails_sender/features/email/domain/usecase/get_emails.dart';
+import 'package:emails_sender/features/email_input/domain/entities/email.dart';
+import 'package:emails_sender/features/email_input/domain/usecase/get_emails.dart';
 
 class EmailInputState {
   final List<Email> emails;

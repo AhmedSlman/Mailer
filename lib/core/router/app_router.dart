@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:emails_sender/features/email/presentation/view/email_input_screen.dart';
+import 'package:emails_sender/features/email_input/presentation/view/email_input_screen.dart';
 import 'package:emails_sender/features/template_management/presentation/view/template_screen.dart';
 import 'package:emails_sender/features/template_management/presentation/cubit/template_cubit.dart';
-import 'package:emails_sender/features/email/presentation/cubit/email_input_cubit.dart';
+import 'package:emails_sender/features/email_input/presentation/cubit/email_input_cubit.dart';
 import 'package:emails_sender/core/di/injection_container.dart';
 
 class AppRouter {

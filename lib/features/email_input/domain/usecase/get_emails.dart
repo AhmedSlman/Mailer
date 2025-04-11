@@ -1,7 +1,7 @@
 // lib/features/email_input/domain/usecases/get_emails.dart
 
-import 'package:emails_sender/features/email/domain/entities/email.dart';
-import 'package:emails_sender/features/email/domain/repo/email_repository.dart';
+import 'package:emails_sender/features/email_input/domain/entities/email.dart';
+import 'package:emails_sender/features/email_input/domain/repo/email_repository.dart';
 
 class EmailValidationException implements Exception {
   final String message;

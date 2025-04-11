@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:excel/excel.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart' as syncfusion;
-import 'package:emails_sender/features/email/domain/entities/email.dart';
-import 'package:emails_sender/features/email/data/datasources/email_local_datasource.dart';
+import 'package:emails_sender/features/email_input/domain/entities/email.dart';
+import 'package:emails_sender/features/email_input/data/datasources/email_local_datasource.dart';
 
 class FileReadException implements Exception {
   final String message;
