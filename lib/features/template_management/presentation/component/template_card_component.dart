@@ -1,5 +1,5 @@
 import 'package:emails_sender/features/template_management/domain/entities/template.dart';
-import 'package:emails_sender/features/template_management/presentation/componant/template_dialog_component.dart';
+import 'package:emails_sender/features/template_management/presentation/component/template_dialog_component.dart';
 import 'package:emails_sender/features/template_management/presentation/cubit/template_cubit.dart';
 import 'package:emails_sender/features/template_management/presentation/widgets/template_card_widget.dart';
 import 'package:flutter/material.dart';

@@ -1,5 +1,5 @@
-import 'package:emails_sender/features/template_management/presentation/componant/template_dialog_component.dart';
-import 'package:emails_sender/features/template_management/presentation/componant/template_list_component.dart';
+import 'package:emails_sender/features/template_management/presentation/component/template_dialog_component.dart';
+import 'package:emails_sender/features/template_management/presentation/component/template_list_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:emails_sender/core/di/injection_container.dart';

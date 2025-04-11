@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       title: 'Emails Sender',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.dark,
       routerConfig: AppRouter.router,
     );
   }

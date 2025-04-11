@@ -1,5 +1,5 @@
 import 'package:emails_sender/features/template_management/domain/entities/template.dart';
-import 'package:emails_sender/features/template_management/presentation/componant/template_card_component.dart';
+import 'package:emails_sender/features/template_management/presentation/component/template_card_component.dart';
 import 'package:flutter/material.dart';
 
 class TemplateListWidget extends StatelessWidget {

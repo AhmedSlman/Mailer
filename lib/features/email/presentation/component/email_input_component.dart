@@ -14,80 +14,143 @@ class EmailInputComponent extends StatelessWidget {
       listener: (context, state) {
         if (state.emails.isNotEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("تم تحميل الإيميلات بنجاح")),
+            SnackBar(
+              content: const Text("تم تحميل الإيميلات بنجاح"),
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              behavior: SnackBarBehavior.floating,
+            ),
           );
         }
       },
       builder: (context, state) {
         return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // Manual Input Section
-            const Text(
-              "أدخل إيميل يدويًا",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.teal,
+            Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
               ),
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              onSubmitted: (value) {
-                context.read<EmailInputCubit>().loadEmails(manualInput: value);
-              },
-              decoration: InputDecoration(
-                hintText: "مثال: example@domain.com",
-                prefixIcon: const Icon(Icons.email, color: Colors.teal),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "أدخل إيميل يدويًا",
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      onSubmitted: (value) {
+                        context.read<EmailInputCubit>().loadEmails(manualInput: value);
+                      },
+                      decoration: InputDecoration(
+                        hintText: "مثال: example@domain.com",
+                        prefixIcon: Icon(
+                          Icons.email,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        filled: true,
+                      ),
+                    ),
+                  ],
                 ),
-                filled: true,
-                fillColor: Colors.grey[100],
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
 
             // File Upload Section
-            const Text(
-              "تحميل من ملف",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.teal,
+            Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "تحميل من ملف",
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        FileUploadButton(
+                          label: "Excel",
+                          icon: Icons.table_chart,
+                          extensions: ['xlsx', 'xls'],
+                          onFileSelected: (filePath) {
+                            context.read<EmailInputCubit>().loadEmails(filePath: filePath);
+                          },
+                        ),
+                        FileUploadButton(
+                          label: "PDF",
+                          icon: Icons.picture_as_pdf,
+                          extensions: ['pdf'],
+                          onFileSelected: (filePath) {
+                            context.read<EmailInputCubit>().loadEmails(filePath: filePath);
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                FileUploadButton(
-                  label: "Excel",
-                  icon: Icons.table_chart,
-                  extensions: ['xlsx', 'xls'],
-                  onFileSelected: (filePath) {
-                    context.read<EmailInputCubit>().loadEmails(filePath: filePath);
-                  },
-                ),
-                FileUploadButton(
-                  label: "PDF",
-                  icon: Icons.picture_as_pdf,
-                  extensions: ['pdf'],
-                  onFileSelected: (filePath) {
-                    context.read<EmailInputCubit>().loadEmails(filePath: filePath);
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
 
             // Email List
             Expanded(
-              child: EmailListWidget(
-                emails: state.emails,
-                onDelete: (index) {
-                  context.read<EmailInputCubit>().removeEmail(index);
-                },
+              child: Card(
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "قائمة الإيميلات",
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      if (state.emails.isEmpty)
+                        Center(
+                          child: Text(
+                            "لا توجد إيميلات",
+                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        )
+                      else
+                        Expanded(
+                          child: EmailListWidget(
+                            emails: state.emails,
+                            onDelete: (index) {
+                              context.read<EmailInputCubit>().removeEmail(index);
+                            },
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ],
