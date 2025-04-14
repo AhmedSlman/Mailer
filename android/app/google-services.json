@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "310288585268",
+    "project_id": "mailler-d87d5",
+    "storage_bucket": "mailler-d87d5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:310288585268:android:6b0d1fe8eda4a3a6013061",
+        "android_client_info": {
+          "package_name": "com.example.emails_sender"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3rZ4Wy0I8JPjWmVUzxLVt2XbJR91uZ_4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
