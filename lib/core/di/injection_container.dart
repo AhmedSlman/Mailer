@@ -1,3 +1,12 @@
+import 'package:emails_sender/features/auth/data/remote/auth_remote_ds.dart';
+import 'package:emails_sender/features/auth/data/repo/auth_repository_impl.dart';
+import 'package:emails_sender/features/auth/domain/repo/auth_repository.dart';
+import 'package:emails_sender/features/auth/domain/usecase/sign_in.dart.dart';
+import 'package:emails_sender/features/auth/domain/usecase/sign_out.dart';
+import 'package:emails_sender/features/mailer/data/remote/email_sender.dart';
+import 'package:emails_sender/features/mailer/data/repo/email_repository_impl.dart';
+import 'package:emails_sender/features/mailer/domain/repo/email_repository.dart';
+import 'package:emails_sender/features/mailer/domain/usecase/send_emails.dart';
 import 'package:get_it/get_it.dart';
 import 'package:emails_sender/features/email_input/data/datasources/email_local_datasource_impl.dart';
 import 'package:emails_sender/features/email_input/data/repo/email_repository_impl.dart';
@@ -20,38 +29,37 @@ Future<void> init() async {
   sl.registerLazySingleton<EmailLocalDataSourceImpl>(
     () => EmailLocalDataSourceImpl(),
   );
+  sl.registerLazySingleton<AuthDataSource>(() => AuthDataSourceImpl());
+  sl.registerLazySingleton<EmailSender>(() => EmailSenderImpl());
 
   // Repositories
   sl.registerLazySingleton<EmailRepository>(
-    () => EmailRepositoryImpl(
-      sl<EmailLocalDataSourceImpl>(),
-    ),
+    () => EmailRepositoryImpl(sl<EmailLocalDataSourceImpl>()),
+  );
+  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl()));
+  sl.registerLazySingleton<SendEmailRepository>(
+    () => SendEmailRepositoryImpl(sl()),
   );
 
   // Use Cases
-  sl.registerLazySingleton(
-    () => GetEmails(sl<EmailRepository>()),
-  );
+  sl.registerLazySingleton(() => GetEmails(sl<EmailRepository>()));
+  sl.registerLazySingleton(() => SignIn(sl()));
+  sl.registerLazySingleton(() => SignOut(sl()));
+  sl.registerLazySingleton(() => SendEmails(sl()));
 
   // Template Management Feature
   // Repositories
-  sl.registerLazySingleton<TemplateRepository>(
-    () => TemplateRepositoryImpl(),
-  );
+  sl.registerLazySingleton<TemplateRepository>(() => TemplateRepositoryImpl());
 
   // Use Cases
-  sl.registerLazySingleton(
-    () => GetTemplatesUseCase(sl<TemplateRepository>()),
-  );
-  
-  sl.registerLazySingleton(
-    () => AddTemplateUseCase(sl<TemplateRepository>()),
-  );
-  
+  sl.registerLazySingleton(() => GetTemplatesUseCase(sl<TemplateRepository>()));
+
+  sl.registerLazySingleton(() => AddTemplateUseCase(sl<TemplateRepository>()));
+
   sl.registerLazySingleton(
     () => UpdateTemplateUseCase(sl<TemplateRepository>()),
   );
-  
+
   sl.registerLazySingleton(
     () => DeleteTemplateUseCase(sl<TemplateRepository>()),
   );
@@ -66,7 +74,5 @@ Future<void> init() async {
     ),
   );
 
-  sl.registerFactory(
-    () => EmailInputCubit(sl<GetEmailsUseCase>()),
-  );
-} 
+  sl.registerFactory(() => EmailInputCubit(sl<GetEmailsUseCase>()));
+}
