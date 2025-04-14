@@ -1,9 +1,8 @@
 import 'package:emails_sender/firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-
+import 'package:emails_sender/core/router/app_router_new.dart';
 import 'package:emails_sender/core/di/injection_container.dart';
-import 'package:emails_sender/core/router/app_router.dart';
 import 'package:emails_sender/core/theme/app_theme.dart';
 
 void main() async {

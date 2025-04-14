@@ -1,19 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:emails_sender/features/auth/presentation/screens/login_screen.dart';
 import 'package:emails_sender/features/email_input/presentation/view/email_input_screen.dart';
 import 'package:emails_sender/features/template_management/presentation/view/template_screen.dart';
 import 'package:emails_sender/features/template_management/presentation/cubit/template_cubit.dart';
 import 'package:emails_sender/features/email_input/presentation/cubit/email_input_cubit.dart';
+import 'package:emails_sender/features/mailer/presentation/screens/send_emails_screen.dart';
+import 'package:emails_sender/features/template_management/domain/entities/template.dart';
 import 'package:emails_sender/core/di/injection_container.dart';
 
 class AppRouter {
   static const String home = '/';
   static const String templates = '/templates';
+  static const String login = '/login';
+  static const String sendEmails = '/send-emails';
 
   static final GoRouter router = GoRouter(
-    initialLocation: home,
+    initialLocation: login,
+    redirect: (context, state) {
+      final bool isLoggedIn = FirebaseAuth.instance.currentUser != null;
+      final bool isLoginRoute = state.uri.path == login;
+
+      if (!isLoggedIn && !isLoginRoute) {
+        return login;
+      }
+
+      if (isLoggedIn && isLoginRoute) {
+        return home;
+      }
+
+      return null;
+    },
     routes: [
+      GoRoute(
+        path: login,
+        builder: (context, state) => LoginScreen(),
+      ),
       ShellRoute(
         builder: (context, state, child) => MultiBlocProvider(
           providers: [
@@ -53,6 +77,17 @@ class AppRouter {
             name: 'templates',
             builder: (context, state) => const TemplateScreen(),
           ),
+          GoRoute(
+            path: sendEmails,
+            name: 'send-emails',
+            builder: (context, state) {
+              final extra = state.extra as Map<String, dynamic>;
+              return SendEmailsScreen(
+                selectedEmails: extra['selectedEmails'] as List<String>,
+                templates: extra['templates'] as List<Template>,
+              );
+            },
+          ),
         ],
       ),
     ],
@@ -80,5 +115,4 @@ class AppRouter {
         break;
     }
   }
-}
- 
+} 

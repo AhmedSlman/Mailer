@@ -1,4 +1,5 @@
 import 'package:emails_sender/features/mailer/domain/repo/email_repository.dart';
+import 'package:emails_sender/features/template_management/domain/entities/template.dart';
 
 class SendEmails {
   final SendEmailRepository repository;
@@ -9,17 +10,13 @@ class SendEmails {
     required String accessToken,
     required String from,
     required List<String> toEmails,
-    required String subject,
-    required String coverLetter,
-    required String cv,
+    required Template template,
   }) async {
     await repository.sendEmails(
       accessToken: accessToken,
       from: from,
       toEmails: toEmails,
-      subject: subject,
-      coverLetter: coverLetter,
-      cv: cv,
+      template: template,
     );
   }
 }

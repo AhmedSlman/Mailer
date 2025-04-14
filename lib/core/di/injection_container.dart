@@ -1,7 +1,7 @@
 import 'package:emails_sender/features/auth/data/remote/auth_remote_ds.dart';
 import 'package:emails_sender/features/auth/data/repo/auth_repository_impl.dart';
 import 'package:emails_sender/features/auth/domain/repo/auth_repository.dart';
-import 'package:emails_sender/features/auth/domain/usecase/sign_in.dart.dart';
+import 'package:emails_sender/features/auth/domain/usecase/sign_in.dart';
 import 'package:emails_sender/features/auth/domain/usecase/sign_out.dart';
 import 'package:emails_sender/features/mailer/data/remote/email_sender.dart';
 import 'package:emails_sender/features/mailer/data/repo/email_repository_impl.dart';
@@ -36,7 +36,7 @@ Future<void> init() async {
   sl.registerLazySingleton<EmailRepository>(
     () => EmailRepositoryImpl(sl<EmailLocalDataSourceImpl>()),
   );
-  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl()));
+  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl());
   sl.registerLazySingleton<SendEmailRepository>(
     () => SendEmailRepositoryImpl(sl()),
   );

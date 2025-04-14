@@ -2,15 +2,14 @@ import 'dart:convert';
 import 'package:googleapis/gmail/v1.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:http/http.dart' as http;
+import 'package:emails_sender/features/template_management/domain/entities/template.dart';
 
 abstract class EmailSender {
   Future<void> sendEmails({
     required String accessToken,
     required String from,
     required List<String> toEmails,
-    required String subject,
-    required String coverLetter,
-    required String cv,
+    required Template template,
   });
 }
 
@@ -20,9 +19,7 @@ class EmailSenderImpl implements EmailSender {
     required String accessToken,
     required String from,
     required List<String> toEmails,
-    required String subject,
-    required String coverLetter,
-    required String cv,
+    required Template template,
   }) async {
     try {
       final authClient = authenticatedClient(
@@ -44,16 +41,16 @@ class EmailSenderImpl implements EmailSender {
         final messageContent = '''
 From: $from
 To: $toEmail
-Subject: $subject
+Subject: ${template.subject}
 Content-Type: text/html; charset="utf-8"
 MIME-Version: 1.0
 
 <html>
   <body>
     <h2>Cover Letter</h2>
-    <p>$coverLetter</p>
+    <p>${template.coverLetter}</p>
     <h2>CV</h2>
-    <p>$cv</p>
+    <p>${template.cvPath}</p>
   </body>
 </html>
 ''';

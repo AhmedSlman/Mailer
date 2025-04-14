@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:emails_sender/features/email_input/domain/entities/email.dart';
 import 'package:emails_sender/features/email_input/presentation/cubit/email_input_cubit.dart';
 import 'package:emails_sender/features/email_input/presentation/widget/email_list_widget.dart';
 import 'package:emails_sender/features/email_input/presentation/widget/file_upload_button.dart';
+import 'package:emails_sender/features/template_management/domain/entities/template.dart';
+import 'package:emails_sender/features/template_management/presentation/cubit/template_cubit.dart';
+import 'package:emails_sender/features/template_management/presentation/cubit/template_state.dart';
 
 class EmailInputComponent extends StatelessWidget {
   const EmailInputComponent({super.key});
@@ -226,6 +230,41 @@ class EmailInputComponent extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 16),
+            if (state.emails.isNotEmpty) ...[
+              ElevatedButton(
+                onPressed: () {
+                  final templateState = context.read<TemplateCubit>().state;
+                  if (templateState is TemplateLoaded) {
+                    context.push('/send-emails', extra: {
+                      'selectedEmails': state.emails.map((e) => e.address).toList(),
+                      'templates': templateState.templates,
+                    });
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('يرجى الانتظار حتى يتم تحميل القوالب'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF03DAC5),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: const Text(
+                  "إرسال البريد",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
           ],
         );
       },
