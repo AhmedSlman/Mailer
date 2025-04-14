@@ -47,9 +47,7 @@ MIME-Version: 1.0
 
 <html>
   <body>
-    <h2>Cover Letter</h2>
     <p>${template.coverLetter}</p>
-    <h2>CV</h2>
     <p>${template.cvPath}</p>
   </body>
 </html>

@@ -250,7 +250,7 @@ class EmailInputComponent extends StatelessWidget {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF03DAC5),
+                  backgroundColor: const Color.fromARGB(255, 9, 160, 145),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
@@ -259,9 +259,11 @@ class EmailInputComponent extends StatelessWidget {
                 child: const Text(
                   "إرسال البريد",
                   style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+                    fontSize: 20,
+                           color: Colors.white,
+                           fontWeight: FontWeight.bold,
+                           
+                      ),
                 ),
               ),
             ],
