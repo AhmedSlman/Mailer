@@ -10,19 +10,26 @@ import 'package:emails_sender/features/email_input/presentation/cubit/email_inpu
 import 'package:emails_sender/features/mailer/presentation/screens/send_emails_screen.dart';
 import 'package:emails_sender/features/template_management/domain/entities/template.dart';
 import 'package:emails_sender/core/di/injection_container.dart';
+import 'package:emails_sender/features/splash/presentation/screens/splash_screen.dart';
 
 class AppRouter {
+  static const String splash = '/splash';
   static const String home = '/';
   static const String templates = '/templates';
   static const String login = '/login';
   static const String sendEmails = '/send-emails';
 
   static final GoRouter router = GoRouter(
-    initialLocation: login,
+    initialLocation: splash,
     redirect: (context, state) {
       final bool isLoggedIn = FirebaseAuth.instance.currentUser != null;
       final bool isLoginRoute = state.uri.path == login;
-      final bool isInitialRoute = state.uri.path == '/';
+      final bool isSplashRoute = state.uri.path == splash;
+
+      // If on splash screen, let it handle the navigation
+      if (isSplashRoute) {
+        return null;
+      }
 
       // If not logged in and trying to access protected routes, redirect to login
       if (!isLoggedIn && !isLoginRoute) {
@@ -34,14 +41,13 @@ class AppRouter {
         return home;
       }
 
-      // If not logged in and on initial route, redirect to login
-      if (!isLoggedIn && isInitialRoute) {
-        return login;
-      }
-
       return null;
     },
     routes: [
+      GoRoute(
+        path: splash,
+        builder: (context, state) => const SplashScreen(),
+      ),
       GoRoute(
         path: login,
         builder: (context, state) => LoginScreen(),
