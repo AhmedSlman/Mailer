@@ -36,94 +36,30 @@ class _TemplateDialogWidgetState extends State<TemplateDialogWidget> {
     final isEdit = widget.template != null;
 
     return AlertDialog(
-      backgroundColor: Colors.grey[900], // خلفية الـ Dialog تكون دارك
+      backgroundColor: const Color(0xFF1E1E1E),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       title: Text(
         isEdit ? 'تعديل القالب' : 'إضافة قالب جديد',
-        style: const TextStyle(color: Colors.white), // لون النص أبيض عشان يبان
+        style: const TextStyle(color: Colors.white, fontSize: 20),
       ),
       content: SingleChildScrollView(
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            TextField(
+            _buildTextField(
               controller: _subjectController,
-              style: const TextStyle(color: Colors.white), // لون النص اللي بيكتبه المستخدم أبيض
-              decoration: InputDecoration(
-                labelText: 'Subject',
-                labelStyle: const TextStyle(color: Colors.grey), // لون الـ Label رمادي فاتح
-                prefixIcon: const Icon(Icons.subject, color: Colors.grey),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: Colors.grey), // لون الحدود رمادي
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: Colors.grey),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: Colors.teal), // لون الحدود لما يكون فيه فوكس
-                ),
-                filled: true,
-                fillColor: Colors.grey[800], // خلفية الـ TextField دارك
-              ),
+              label: 'Subject',
+              icon: Icons.subject,
             ),
-            const SizedBox(height: 10),
-            TextField(
+            const SizedBox(height: 12),
+            _buildTextField(
               controller: _coverLetterController,
+              label: 'Cover Letter',
+              icon: Icons.description,
               maxLines: 5,
-              style: const TextStyle(color: Colors.white), // لون النص اللي بيكتبه المستخدم أبيض
-              decoration: InputDecoration(
-                labelText: 'Cover Letter',
-                labelStyle: const TextStyle(color: Colors.grey),
-                prefixIcon: const Icon(Icons.description, color: Colors.grey),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: Colors.grey),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: Colors.grey),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: Colors.teal),
-                ),
-                filled: true,
-                fillColor: Colors.grey[800], // خلفية الـ TextField دارك
-              ),
             ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    _cvPath?.split('/').last ?? 'لم يتم اختيار CV',
-                    style: const TextStyle(color: Colors.grey), // لون النص رمادي عشان يبان
-                  ),
-                ),
-                ElevatedButton.icon(
-                  onPressed: () async {
-                    final result = await FilePicker.platform.pickFiles(
-                      type: FileType.custom,
-                      allowedExtensions: ['pdf'],
-                    );
-                    if (result != null) {
-                      setState(() => _cvPath = result.files.single.path);
-                    }
-                  },
-                  icon: const Icon(Icons.attach_file),
-                  label: const Text('CV'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.teal, // لون الزر ثابت
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            const SizedBox(height: 12),
+            _buildCVPicker(context),
           ],
         ),
       ),
@@ -132,14 +68,14 @@ class _TemplateDialogWidgetState extends State<TemplateDialogWidget> {
           onPressed: () => Navigator.pop(context),
           child: const Text(
             'إلغاء',
-            style: TextStyle(color: Colors.grey), // لون زر الإلغاء رمادي
+            style: TextStyle(color: Colors.grey),
           ),
         ),
         ElevatedButton(
           onPressed: () {
             widget.onSubmit(
-              _subjectController.text,
-              _coverLetterController.text,
+              _subjectController.text.trim(),
+              _coverLetterController.text.trim(),
               _cvPath ?? '',
             );
             Navigator.pop(context);
@@ -147,10 +83,88 @@ class _TemplateDialogWidgetState extends State<TemplateDialogWidget> {
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.teal,
             foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
           child: Text(isEdit ? 'حفظ' : 'إضافة'),
         ),
       ],
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    int maxLines = 1,
+  }) {
+    return TextField(
+      controller: controller,
+      maxLines: maxLines,
+      style: const TextStyle(color: Colors.white),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: const TextStyle(color: Colors.grey),
+        prefixIcon: Icon(icon, color: Colors.grey),
+        filled: true,
+        fillColor: const Color(0xFF2C2C2C),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: Colors.grey),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: Colors.teal),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCVPicker(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFF2C2C2C),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              _cvPath?.split('/').last ?? 'لم يتم اختيار CV',
+              style: const TextStyle(color: Colors.grey),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          ElevatedButton.icon(
+            onPressed: () async {
+              final result = await FilePicker.platform.pickFiles(
+                type: FileType.custom,
+                allowedExtensions: ['pdf'],
+              );
+              if (result != null) {
+                setState(() => _cvPath = result.files.single.path);
+              }
+            },
+            icon: const Icon(Icons.attach_file, size: 18),
+            label: const Text('اختيار'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.teal,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              textStyle: const TextStyle(fontSize: 14),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
