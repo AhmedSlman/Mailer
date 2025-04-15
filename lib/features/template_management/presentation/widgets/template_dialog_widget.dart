@@ -4,7 +4,8 @@ import 'package:file_picker/file_picker.dart';
 
 class TemplateDialogWidget extends StatefulWidget {
   final Template? template;
-  final void Function(String subject, String coverLetter, String cvPath) onSubmit;
+  final void Function(String subject, String coverLetter, String cvPath)
+  onSubmit;
 
   const TemplateDialogWidget({
     super.key,
@@ -66,10 +67,7 @@ class _TemplateDialogWidgetState extends State<TemplateDialogWidget> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text(
-            'إلغاء',
-            style: TextStyle(color: Colors.grey),
-          ),
+          child: const Text('إلغاء', style: TextStyle(color: Colors.grey)),
         ),
         ElevatedButton(
           onPressed: () {
@@ -81,7 +79,7 @@ class _TemplateDialogWidgetState extends State<TemplateDialogWidget> {
             Navigator.pop(context);
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.teal,
+            backgroundColor: Theme.of(context).colorScheme.primary,
             foregroundColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
@@ -109,9 +107,7 @@ class _TemplateDialogWidgetState extends State<TemplateDialogWidget> {
         prefixIcon: Icon(icon, color: Colors.grey),
         filled: true,
         fillColor: const Color(0xFF2C2C2C),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: const BorderSide(color: Colors.grey),
@@ -154,7 +150,7 @@ class _TemplateDialogWidgetState extends State<TemplateDialogWidget> {
             icon: const Icon(Icons.attach_file, size: 18),
             label: const Text('اختيار'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.teal,
+              backgroundColor: Theme.of(context).colorScheme.primary,
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),

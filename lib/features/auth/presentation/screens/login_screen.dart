@@ -35,7 +35,9 @@ class LoginScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: [
                         BoxShadow(
-                          color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.primary.withOpacity(0.2),
                           blurRadius: 20,
                           offset: const Offset(0, 10),
                         ),
@@ -60,7 +62,9 @@ class LoginScreen extends StatelessWidget {
                   Text(
                     'Sign in to start sending emails',
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.onBackground.withOpacity(0.7),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onBackground.withOpacity(0.7),
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -77,7 +81,8 @@ class LoginScreen extends StatelessWidget {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text('Failed to sign in: $e'),
-                              backgroundColor: Theme.of(context).colorScheme.error,
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.error,
                             ),
                           );
                         }
@@ -95,10 +100,11 @@ class LoginScreen extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Image.asset(
-                          'assets/images/google_logo.png',
-                          height: 24,
+                        Icon(
+                          Icons.login,
+                          color: Theme.of(context).colorScheme.onPrimary,
                         ),
+
                         const SizedBox(width: 12),
                         const Text(
                           'Sign in with Google',
@@ -118,4 +124,4 @@ class LoginScreen extends StatelessWidget {
       ),
     );
   }
-} 
+}
