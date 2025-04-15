@@ -16,12 +16,19 @@ class EmailInputScreen extends StatelessWidget {
       create: (_) => EmailInputCubit(sl<GetEmails>()),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("إدخال الإيميلات"),
-          backgroundColor: Colors.teal,
-          elevation: 0,
+          title: Text(
+            "Email Input",
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              color: Theme.of(context).colorScheme.onPrimary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           actions: [
             IconButton(
-              icon: const Icon(Icons.logout),
+              icon: Icon(
+                Icons.logout,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
               onPressed: () async {
                 await FirebaseAuth.instance.signOut();
                 if (context.mounted) {
@@ -31,9 +38,21 @@ class EmailInputScreen extends StatelessWidget {
             ),
           ],
         ),
-        body: const Padding(
-          padding: EdgeInsets.all(16.0),
-          child: EmailInputComponent(),
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Theme.of(context).colorScheme.background,
+                Theme.of(context).colorScheme.surface,
+              ],
+            ),
+          ),
+          child: const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: EmailInputComponent(),
+          ),
         ),
       ),
     );

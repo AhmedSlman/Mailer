@@ -1,6 +1,7 @@
 import 'package:emails_sender/features/template_management/presentation/cubit/template_cubit.dart';
 import 'package:emails_sender/features/template_management/presentation/cubit/template_state.dart';
 import 'package:emails_sender/features/template_management/presentation/view/template_details_screen.dart';
+import 'package:emails_sender/features/template_management/presentation/component/template_dialog_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,44 +14,85 @@ class TemplateListComponent extends StatelessWidget {
       listener: (context, state) {
         if (state is TemplateLoaded) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('تم تحديث القوالب بنجاح'),
+            SnackBar(
+              content: Text(
+                'Templates updated successfully',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onError,
+                ),
+              ),
+              backgroundColor: Theme.of(context).colorScheme.error,
               behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
           );
         } else if (state is TemplateError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.message),
-              backgroundColor: Colors.red,
+              content: Text(
+                state.message,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onError,
+                ),
+              ),
+              backgroundColor: Theme.of(context).colorScheme.error,
               behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
           );
         }
       },
       builder: (context, state) {
         if (state is TemplateLoading) {
-          return const Center(
-            child: CircularProgressIndicator(),
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Loading templates...',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+              ],
+            ),
           );
         } else if (state is TemplateError) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(
+                Icon(
                   Icons.error_outline,
-                  color: Colors.red,
+                  color: Theme.of(context).colorScheme.error,
                   size: 48,
                 ),
                 const SizedBox(height: 16),
                 Text(
                   state.message,
-                  style: const TextStyle(
-                    color: Colors.red,
-                    fontSize: 16,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.error,
                   ),
                   textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: () {
+                    context.read<TemplateCubit>().loadTemplates();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                  child: const Text('Retry'),
                 ),
               ],
             ),
@@ -61,26 +103,41 @@ class TemplateListComponent extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(
-                    Icons.description_outlined,
-                    size: 64,
-                    color: Colors.grey,
+                  Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                          blurRadius: 20,
+                          offset: const Offset(0, 10),
+                        ),
+                      ],
+                    ),
+                    child: Icon(
+                      Icons.description_outlined,
+                      size: 80,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  Text(
+                    'No Templates Yet',
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
-                  const Text(
-                    'لا توجد قوالب بعد',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.grey,
+                  Text(
+                    'Create your first template to get started',
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.onBackground.withOpacity(0.7),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'اضغط على زر + لإضافة قالب جديد',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey,
-                    ),
+                    textAlign: TextAlign.center,
                   ),
                 ],
               ),
@@ -117,66 +174,104 @@ class TemplateListComponent extends StatelessWidget {
                       children: [
                         Row(
                           children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Icon(
+                                Icons.description_outlined,
+                                color: Theme.of(context).colorScheme.primary,
+                                size: 24,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
                             Expanded(
                               child: Text(
                                 template.subject,
-                                style: const TextStyle(
-                                  fontSize: 18,
+                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  color: Theme.of(context).colorScheme.onSurface,
                                   fontWeight: FontWeight.bold,
                                 ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                IconButton(
-                                  icon: const Icon(Icons.edit),
-                                  color: Colors.blue,
-                                  onPressed: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => AlertDialog(
-                                        title: const Text('تعديل القالب'),
-                                        content: Text('تعديل القالب: ${template.subject}'),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () => Navigator.pop(context),
-                                            child: const Text('إلغاء'),
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                              // TODO: Implement edit functionality
-                                            },
-                                            child: const Text('تعديل'),
-                                          ),
-                                        ],
+                            PopupMenuButton(
+                              itemBuilder: (context) => [
+                                PopupMenuItem(
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.edit,
+                                        color: Theme.of(context).colorScheme.primary,
+                                        size: 20,
                                       ),
-                                    );
-                                  },
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        'Edit',
+                                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                          color: Theme.of(context).colorScheme.onSurface,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  onTap: () => showTemplateDialogComponent(context, template: template),
                                 ),
-                                IconButton(
-                                  icon: const Icon(Icons.delete),
-                                  color: Colors.red,
-                                  onPressed: () {
+                                PopupMenuItem(
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.delete,
+                                        color: Theme.of(context).colorScheme.error,
+                                        size: 20,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        'Delete',
+                                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                          color: Theme.of(context).colorScheme.error,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  onTap: () {
                                     showDialog(
                                       context: context,
                                       builder: (context) => AlertDialog(
-                                        title: const Text('حذف القالب'),
-                                        content: Text('هل أنت متأكد من حذف "${template.subject}"؟'),
+                                        backgroundColor: Theme.of(context).colorScheme.surface,
+                                        title: Text(
+                                          'Delete Template',
+                                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                            color: Theme.of(context).colorScheme.onSurface,
+                                          ),
+                                        ),
+                                        content: Text(
+                                          'Are you sure you want to delete "${template.subject}"?',
+                                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                            color: Theme.of(context).colorScheme.onSurface,
+                                          ),
+                                        ),
                                         actions: [
                                           TextButton(
                                             onPressed: () => Navigator.pop(context),
-                                            child: const Text('إلغاء'),
+                                            child: Text(
+                                              'Cancel',
+                                              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                                                color: Theme.of(context).colorScheme.primary,
+                                              ),
+                                            ),
                                           ),
                                           TextButton(
                                             onPressed: () {
                                               context.read<TemplateCubit>().deleteTemplate(template.id);
                                               Navigator.pop(context);
                                             },
-                                            child: const Text('حذف'),
+                                            child: Text(
+                                              'Delete',
+                                              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                                                color: Theme.of(context).colorScheme.error,
+                                              ),
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -187,39 +282,34 @@ class TemplateListComponent extends StatelessWidget {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 16),
                         Text(
                           template.coverLetter,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey,
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                           ),
-                          maxLines: 2,
+                          maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 8),
-                        if (template.cvPath.isNotEmpty)
+                        if (template.cvPath != null) ...[
+                          const SizedBox(height: 16),
                           Row(
                             children: [
-                              const Icon(
+                              Icon(
                                 Icons.attach_file,
-                                size: 16,
-                                color: Colors.grey,
+                                color: Theme.of(context).colorScheme.primary,
+                                size: 20,
                               ),
-                              const SizedBox(width: 4),
-                              Expanded(
-                                child: Text(
-                                  template.cvPath.split('/').last,
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
+                              const SizedBox(width: 8),
+                              Text(
+                                'CV Attached',
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  color: Theme.of(context).colorScheme.primary,
                                 ),
                               ),
                             ],
                           ),
+                        ],
                       ],
                     ),
                   ),
@@ -228,9 +318,8 @@ class TemplateListComponent extends StatelessWidget {
             },
           );
         }
-        return const Center(
-          child: Text('لا توجد قوالب بعد'),
-        );
+
+        return const SizedBox.shrink();
       },
     );
   }

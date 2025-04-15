@@ -23,17 +23,45 @@ class TemplateScreen extends StatelessWidget {
       ),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Templates'),
+          title: Text(
+            'Templates',
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              color: Theme.of(context).colorScheme.onPrimary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
-        body: TemplateListComponent(),
-
-        floatingActionButton: FloatingActionButton(
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Theme.of(context).colorScheme.background,
+                Theme.of(context).colorScheme.surface,
+              ],
+            ),
+          ),
+          child: const TemplateListComponent(),
+        ),
+        floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
             showTemplateDialogComponent(context);
           },
-          child: const Icon(Icons.add),
+          icon: Icon(
+            Icons.add,
+            color: Theme.of(context).colorScheme.onPrimary,
+          ),
+          label: Text(
+            'New Template',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onPrimary,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          backgroundColor: Theme.of(context).colorScheme.primary,
         ),
-    ),
+      ),
     );
   }
 }

@@ -53,4 +53,8 @@ class EmailInputCubit extends Cubit<EmailInputState> {
     newList.removeAt(index);
     emit(state.copyWith(emails: newList));
   }
+
+  void clearEmails() {
+    emit(state.copyWith(emails: []));
+  }
 }
