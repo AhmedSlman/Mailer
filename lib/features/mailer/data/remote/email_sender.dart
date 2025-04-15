@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:googleapis/gmail/v1.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:http/http.dart' as http;
@@ -38,23 +39,43 @@ class EmailSenderImpl implements EmailSender {
       final gmailApi = GmailApi(authClient);
 
       for (String toEmail in toEmails) {
+        final message = Message();
+        final boundary = 'boundary_${DateTime.now().millisecondsSinceEpoch}';
+        
+        // Read the CV file
+        final cvFile = File(template.cvPath);
+        final cvBytes = await cvFile.readAsBytes();
+        final cvBase64 = base64Encode(cvBytes);
+        
+        // Create multipart message
         final messageContent = '''
 From: $from
 To: $toEmail
 Subject: ${template.subject}
+Content-Type: multipart/mixed; boundary=$boundary
+
+--$boundary
 Content-Type: text/html; charset="utf-8"
-MIME-Version: 1.0
 
 <html>
   <body>
+    <h2>Cover Letter</h2>
     <p>${template.coverLetter}</p>
-    <p>${template.cvPath}</p>
   </body>
 </html>
+
+--$boundary
+Content-Type: application/pdf
+Content-Disposition: attachment; filename="${cvFile.path.split('/').last}"
+Content-Transfer-Encoding: base64
+
+$cvBase64
+
+--$boundary--
 ''';
 
         final base64Email = base64Url.encode(utf8.encode(messageContent));
-        final message = Message()..raw = base64Email;
+        message.raw = base64Email;
 
         await gmailApi.users.messages.send(message, 'me');
         await Future.delayed(Duration(milliseconds: 500));

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:emails_sender/features/auth/data/repo/auth_repository_impl.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -26,7 +27,7 @@ class LoginScreen extends StatelessWidget {
                 try {
                   await _authRepository.signInWithGoogle();
                   if (context.mounted) {
-                    Navigator.pushReplacementNamed(context, '/home');
+                    context.go('/');
                   }
                 } catch (e) {
                   if (context.mounted) {

@@ -22,13 +22,21 @@ class AppRouter {
     redirect: (context, state) {
       final bool isLoggedIn = FirebaseAuth.instance.currentUser != null;
       final bool isLoginRoute = state.uri.path == login;
+      final bool isInitialRoute = state.uri.path == '/';
 
+      // If not logged in and trying to access protected routes, redirect to login
       if (!isLoggedIn && !isLoginRoute) {
         return login;
       }
 
+      // If logged in and on login route, redirect to home
       if (isLoggedIn && isLoginRoute) {
         return home;
+      }
+
+      // If not logged in and on initial route, redirect to login
+      if (!isLoggedIn && isInitialRoute) {
+        return login;
       }
 
       return null;
