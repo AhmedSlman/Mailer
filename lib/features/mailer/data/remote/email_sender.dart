@@ -41,12 +41,12 @@ class EmailSenderImpl implements EmailSender {
       for (String toEmail in toEmails) {
         final message = Message();
         final boundary = 'boundary_${DateTime.now().millisecondsSinceEpoch}';
-        
+
         // Read the CV file
         final cvFile = File(template.cvPath);
         final cvBytes = await cvFile.readAsBytes();
         final cvBase64 = base64Encode(cvBytes);
-        
+
         // Create multipart message
         final messageContent = '''
 From: $from
@@ -59,7 +59,6 @@ Content-Type: text/html; charset="utf-8"
 
 <html>
   <body>
-    <h2>Cover Letter</h2>
     <p>${template.coverLetter}</p>
   </body>
 </html>

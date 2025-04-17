@@ -1,6 +1,8 @@
 import 'package:emails_sender/features/template_management/domain/entities/template.dart';
+import 'package:emails_sender/features/template_management/presentation/cubit/template_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TemplateDialogWidget extends StatefulWidget {
   final Template? template;
@@ -76,7 +78,10 @@ class _TemplateDialogWidgetState extends State<TemplateDialogWidget> {
               _coverLetterController.text.trim(),
               _cvPath ?? '',
             );
-            Navigator.pop(context);
+            final cubit = context.read<TemplateCubit>();
+            cubit.loadTemplates();
+
+            // Navigator.pop(context);
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Theme.of(context).colorScheme.primary,
@@ -114,7 +119,7 @@ class _TemplateDialogWidgetState extends State<TemplateDialogWidget> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Colors.teal),
+          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
         ),
       ),
     );

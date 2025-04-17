@@ -44,42 +44,35 @@ class AppRouter {
       return null;
     },
     routes: [
-      GoRoute(
-        path: splash,
-        builder: (context, state) => const SplashScreen(),
-      ),
-      GoRoute(
-        path: login,
-        builder: (context, state) => LoginScreen(),
-      ),
+      GoRoute(path: splash, builder: (context, state) => const SplashScreen()),
+      GoRoute(path: login, builder: (context, state) => LoginScreen()),
       ShellRoute(
-        builder: (context, state, child) => MultiBlocProvider(
-          providers: [
-            BlocProvider(
-              create: (context) => sl<TemplateCubit>()..loadTemplates(),
-            ),
-            BlocProvider(
-              create: (context) => sl<EmailInputCubit>(),
-            ),
-          ],
-          child: Scaffold(
-            body: child,
-            bottomNavigationBar: BottomNavigationBar(
-              currentIndex: _calculateSelectedIndex(state.uri.path),
-              onTap: (index) => _onItemTapped(index, context),
-              items: const [
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.email),
-                  label: 'Emails',
+        builder:
+            (context, state, child) => MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) => sl<TemplateCubit>()..loadTemplates(),
                 ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.description),
-                  label: 'Templates',
-                ),
+                BlocProvider(create: (context) => sl<EmailInputCubit>()),
               ],
+              child: Scaffold(
+                body: child,
+                bottomNavigationBar: BottomNavigationBar(
+                  currentIndex: _calculateSelectedIndex(state.uri.path),
+                  onTap: (index) => _onItemTapped(index, context),
+                  items: const [
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.email),
+                      label: 'Emails',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.description),
+                      label: 'Templates',
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ),
-        ),
         routes: [
           GoRoute(
             path: home,
@@ -105,11 +98,9 @@ class AppRouter {
         ],
       ),
     ],
-    errorBuilder: (context, state) => Scaffold(
-      body: Center(
-        child: Text('Error: ${state.error}'),
-      ),
-    ),
+    errorBuilder:
+        (context, state) =>
+            Scaffold(body: Center(child: Text('Error: ${state.error}'))),
   );
 
   static int _calculateSelectedIndex(String path) {
@@ -129,4 +120,4 @@ class AppRouter {
         break;
     }
   }
-} 
+}
